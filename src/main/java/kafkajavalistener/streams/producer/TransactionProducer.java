@@ -9,19 +9,20 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 
 @Component
-public class TransactionProducer {
-
+public class TransactionProducer implements IProducer<TransactionEvent> {
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
     @Value("${kafka.topics.transaction}")
     private String topic;
-
-    @Autowired
     private KafkaTemplate<String, TransactionEvent> kafkaTemplate;
 
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    public TransactionProducer(KafkaTemplate<String, TransactionEvent> kafkaTemplate) {
+        this.kafkaTemplate = kafkaTemplate;
+    }
 
-    public void produceTransactionEvent(TransactionEvent event){
+
+    @Override
+    public void produceEvent(TransactionEvent event) {
         logger.info("method=produceTransactionEvent; transactionId={};", event.getTransId());
         kafkaTemplate.send(topic, event);
     }
-
 }

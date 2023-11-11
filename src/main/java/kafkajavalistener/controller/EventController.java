@@ -4,9 +4,11 @@ import kafkajavalistener.model.PaymentEvent;
 import kafkajavalistener.model.TransactionEvent;
 import kafkajavalistener.streams.producer.PaymentProducer;
 import kafkajavalistener.streams.producer.TransactionProducer;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -15,12 +17,13 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/event")
 public class EventController {
+    private final TransactionProducer transactionProducer;
+    private final PaymentProducer paymentProducer;
 
-    @Autowired
-    private TransactionProducer transactionProducer;
-
-    @Autowired
-    private PaymentProducer paymentProducer;
+    public EventController(TransactionProducer transactionProducer, PaymentProducer paymentProducer) {
+        this.transactionProducer = transactionProducer;
+        this.paymentProducer = paymentProducer;
+    }
 
     @PostMapping("/transaction")
     ResponseEntity<String> produceTransaction(@RequestParam(required = false) String id, @RequestParam(required = false) Integer amount) {
@@ -30,7 +33,7 @@ public class EventController {
                 LocalDateTime.now().toString()
         );
 
-        transactionProducer.produceTransactionEvent(event);
+        transactionProducer.produceEvent(event);
         return ResponseEntity.ok(event.getTransId());
     }
 
@@ -40,7 +43,7 @@ public class EventController {
                 Objects.nonNull(amount) ? amount : 100, Objects.nonNull(currency) ? currency : "BRL"
         );
 
-        paymentProducer.producePaymentEvent(event);
+        paymentProducer.produceEvent(event);
         return ResponseEntity.ok(event.getAmount());
     }
 

@@ -27,7 +27,6 @@ dependencies {
 	implementation("io.confluent:kafka-avro-serializer:5.3.0")
 	implementation("org.apache.avro:avro:1.11.0")
 	implementation("org.springframework.boot:spring-boot-starter-json:3.1.5")
-	compileOnly("org.projectlombok:lombok:1.18.30")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testImplementation("org.springframework.kafka:spring-kafka-test")
 }
