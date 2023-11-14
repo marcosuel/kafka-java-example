@@ -4,6 +4,7 @@ import kafkajavalistener.model.PaymentEvent;
 import kafkajavalistener.model.TransactionEvent;
 import kafkajavalistener.streams.producer.PaymentProducer;
 import kafkajavalistener.streams.producer.TransactionProducer;
+import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,14 +17,10 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/event")
+@AllArgsConstructor
 public class EventController {
     private final TransactionProducer transactionProducer;
     private final PaymentProducer paymentProducer;
-
-    public EventController(TransactionProducer transactionProducer, PaymentProducer paymentProducer) {
-        this.transactionProducer = transactionProducer;
-        this.paymentProducer = paymentProducer;
-    }
 
     @PostMapping("/transaction")
     ResponseEntity<String> produceTransaction(@RequestParam(required = false) String id, @RequestParam(required = false) Integer amount) {
