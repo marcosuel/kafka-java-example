@@ -1,27 +1,23 @@
 package kafkajavalistener.streams.producer;
 
 import kafkajavalistener.model.PaymentEvent;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 
+@Log4j2
 @Component
+@RequiredArgsConstructor
 public class PaymentProducer implements IProducer<PaymentEvent> {
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
     @Value("${kafka.topics.payment}")
     private String topic;
-    private KafkaTemplate<String, PaymentEvent> kafkaTemplate;
-
-    public PaymentProducer(KafkaTemplate<String, PaymentEvent> kafkaTemplate) {
-        this.kafkaTemplate = kafkaTemplate;
-    }
-
+    private final KafkaTemplate<String, PaymentEvent> kafkaTemplate;
 
     @Override
     public void produceEvent(PaymentEvent event) {
-        logger.info("method=produceTransactionEvent; Amount={};", event.getAmount());
+        log.info("method=produceTransactionEvent; Amount={};", event.getAmount());
         kafkaTemplate.send(topic, event);
     }
 }
